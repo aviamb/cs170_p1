@@ -53,14 +53,6 @@ void missingTile(priority_queue<Node, vector<Node>, decltype(&comparatorAStar)> 
        }
    }
 
-
-   //sort(newVec.begin(), newVec.end(),comparator);
-  
-//    for (int i = 0; i < newVec.size(); i++) {
-//        nodes.push(newVec.at(i));
-//    }
-
-
    return;
 }
 
@@ -99,16 +91,7 @@ void manhattan(priority_queue<Node, vector<Node>, decltype(&comparatorAStar)> &n
        }
    }
 
-
-//    sort(newVec.begin(), newVec.end(),comparator);
-  
-//    for (int i = 0; i < newVec.size(); i++) {
-//        nodes.push(newVec.at(i));
-//    }
-
-
    return;
-
 
 }
 
@@ -123,7 +106,6 @@ Node generalSearch(Problem problem, int queueingFunction) {
       
        //testing
        cout << endl;
-       //node.print();
        cout << "The best node to expand with g(n) = " << node.depth << " and h(n) = " << node.cost << " is " << endl;
        node.print();
        cout << endl;
@@ -165,12 +147,17 @@ int main() {
    Problem problem(r1,r2,r3);
 
    //search call
+   const auto clkStart = std::chrono::high_resolution_clock::now();
    Node result = generalSearch(problem, func);
+   const auto clkEnd = std::chrono::high_resolution_clock::now();
+   //const int duration = clkStart - clkEnd;
+    const std::chrono::duration<double> d = clkEnd-clkStart;
 
     cout << "We've reached the goal state: " << endl;
    result.print();
    cout << "at depth: " << result.depth << endl;
    cout << "Total nodes expanded: " << totalexpanded << endl;
+   cout << "Time taken: " << d.count() << "s" << endl << endl;
 
 
    return 0;

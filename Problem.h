@@ -11,7 +11,6 @@ struct Problem {
    Problem(int r1[3], int r2[3], int r3[3]) {
        initialState = Node(r1,r2,r3,0);
 
-
    };
 
 
@@ -25,29 +24,31 @@ struct Problem {
        return (n == goal);
    };
    void visit(Node n) {
-       // string hash;
-       // for (int i = 0; i < 3; i++) {
-       //     for (int j = 0; j < 3; j++) {
-       //         if (n.state[i][j] != 0) hash += to_string(n.state[i][j]);
-       //     }
-       // }
-       // hash = to_integer(hash) % 29;
+        string s;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                s += to_string(n.state[i][j]);
+            }
+        }
 
-
-       visited.push_back(n);
+        visited[s] = true;
    }
+
    bool isVisited(Node n) {
-       for (int i = 0; i < visited.size(); i++) {
-           if (n == visited.at(i)) return true;
-       }
-       return false;
+     string s;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                s += to_string(n.state[i][j]);
+            }
+        }
+
+    return (visited.find(s) != visited.end());
    }
 
 
    //member variables
    Node initialState;
-   vector<Node> visited;
-   //vector<pair<int,int>> operators = {{-1,0},{0,-1},{1,0},{0,1}};
+   unordered_map<string, bool> visited; 
 };
 
 

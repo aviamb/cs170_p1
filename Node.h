@@ -4,7 +4,9 @@
 #include <iostream>
 #include <queue>
 #include <vector>
-#include <algorithm>
+#include <chrono>
+#include <unordered_map>
+#include <string>
 using namespace std;
 
 struct Node {
@@ -48,10 +50,6 @@ struct Node {
        }
        return true;
    }
-   // bool operator<(const Node& rhs) {
-   //     return cost < rhs.cost;
-   // }
-
 
    //functions
    const bool move (int direction) {
@@ -123,10 +121,6 @@ struct Node {
    int depth = 0;
    int cost = 0;
 };
-
-// bool comparator(const Node&lhs, const Node& rhs) {
-//    return lhs.cost > rhs.cost;
-// }
 
 bool comparatorAStar(const Node&lhs, const Node& rhs) {
    return (lhs.cost + lhs.depth) > (rhs.cost + rhs.depth);
