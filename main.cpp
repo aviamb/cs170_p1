@@ -8,10 +8,10 @@ vector<Node> expand(Node node, Problem problem) {
 
 
    for (int i = 0; i < 4; i++) {
-       if (node.move(i)) {
+       if (node.move(i)) {          //check valid
            Node n = node;
-           n.transform(i);
-           n.depth = node.depth + 1;
+           n.transform(i);          //move valid
+           n.depth = node.depth + 1; //increment depth
            vec.push_back(n);
        }
    }
@@ -20,7 +20,7 @@ vector<Node> expand(Node node, Problem problem) {
 
 void uniformCost(priority_queue<Node, vector<Node>, decltype(&comparatorAStar)> &nodes, Node node, Problem problem) {
    vector<Node> vec = expand(node, problem);
-   for (int i = 0; i < vec.size(); i++) {
+   for (int i = 0; i < vec.size(); i++) { //add, BFS for unweighted
        if (!problem.isVisited(vec.at(i))) {nodes.push(vec.at(i));}
    }
    return;
@@ -34,7 +34,7 @@ int computeMissingTiles(Node n) {
       
    Node g = Node(g1,g2,g3,0);
   
-   for (int i = 0; i < 3; i++) {
+   for (int i = 0; i < 3; i++) { //number of missing tiles
        for (int j = 0; j < 3; j++) {
            if (n.state[i][j] != g.state[i][j]) cnt++;
        }
@@ -44,11 +44,9 @@ int computeMissingTiles(Node n) {
 
 void missingTile(priority_queue<Node, vector<Node>, decltype(&comparatorAStar)> &nodes, Node node, Problem problem) {
    vector<Node> vec = expand(node, problem);
-   //vector<Node> newVec;
    for (int i = 0; i < vec.size(); i++) {
        if (!problem.isVisited(vec.at(i))) { //if neighbor is not visited, compute missing tiles and push to queue in order of h(n)
            vec.at(i).cost = computeMissingTiles(vec.at(i));
-           //newVec.push_back(vec.at(i));
            nodes.push(vec.at(i));
        }
    }
@@ -70,7 +68,7 @@ int computeManhattan(Node n) {
        for (int j = 0; j < 3; j++) {
            if (n.state[i][j] != g.state[i][j]) {
                if (n.state[i][j] != 0) {
-                   int row = (n.state[i][j] - 1) / 3;
+                   int row = (n.state[i][j] - 1) / 3; //calculating ideal position
                    int col = (n.state[i][j] - 1) % 3;
                    cnt += abs(i - row) + abs(j - col);
                }
@@ -82,11 +80,9 @@ int computeManhattan(Node n) {
 
 void manhattan(priority_queue<Node, vector<Node>, decltype(&comparatorAStar)> &nodes, Node node, Problem problem) {
    vector<Node> vec = expand(node, problem);
-   //vector<Node> newVec;
-   for (int i = 0; i < vec.size(); i++) {
+   for (int i = 0; i < vec.size(); i++) { //push in order of h(n) + g(n)
        if (!problem.isVisited(vec.at(i))) {
            vec.at(i).cost = computeManhattan(vec.at(i));
-           //newVec.push_back(vec.at(i));
            nodes.push(vec.at(i));
        }
    }
@@ -98,13 +94,14 @@ void manhattan(priority_queue<Node, vector<Node>, decltype(&comparatorAStar)> &n
 Node generalSearch(Problem problem, int queueingFunction) {
    priority_queue<Node, vector<Node>, decltype(&comparatorAStar)> nodes(comparatorAStar);
    nodes.push(problem.initialState);
-   while(!nodes.empty()) {
+
+   while(!nodes.empty()) {          //terminate only when queue is empty (failure) or goal is found
        Node node = nodes.top();
        problem.visit(node);
        nodes.pop();
        totalexpanded++;
       
-       //testing
+       //output
        cout << endl;
        cout << "The best node to expand with g(n) = " << node.depth << " and h(n) = " << node.cost << " is " << endl;
        node.print();

@@ -24,7 +24,7 @@ struct Problem {
        return (n == goal);
    };
    void visit(Node n) {
-        string s;
+        string s;//hashing, key is string format of grid 3x3
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 s += to_string(n.state[i][j]);
@@ -33,7 +33,6 @@ struct Problem {
 
         visited[s] = true;
    }
-
    bool isVisited(Node n) {
      string s;
         for (int i = 0; i < 3; i++) {
@@ -44,7 +43,6 @@ struct Problem {
 
     return (visited.find(s) != visited.end());
    }
-
 
    //member variables
    Node initialState;

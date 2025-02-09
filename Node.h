@@ -57,7 +57,7 @@ struct Node {
       
        for (int i = 0; i < 3; i++) {
            for (int j = 0; j < 3; j++) {
-               if (state[i][j] == 0) {pos = {i,j}; break;} //note this is j,i cause axes are messed up!!!!!!!!!!!!!!!!!!!!!!!!! might cause problems with other stuff
+               if (state[i][j] == 0) {pos = {i,j}; break;}
            }
        }
       
