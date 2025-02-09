@@ -1,6 +1,7 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 
@@ -44,6 +45,9 @@ struct Node {
        }
        return true;
    }
+   // bool operator<(const Node& rhs) {
+   //     return cost < rhs.cost;
+   // }
 
 
    //functions
@@ -109,9 +113,12 @@ struct Node {
            cout << endl;
        }
    }
+
+
    //member variables
    int state[3][3];
    int depth = 0;
+   int cost = 0;
 };
 
 
@@ -188,6 +195,99 @@ void uniformCost(queue<Node> &nodes, Node node, Problem problem) {
 }
 
 
+int computeMissingTiles(Node n) {
+   int cnt = 0;
+   int g1[3] = {1,2,3};
+   int g2[3] = {4,5,6};
+   int g3[3] = {7,8,0};
+      
+   Node g = Node(g1,g2,g3,0);
+  
+   for (int i = 0; i < 3; i++) {
+       for (int j = 0; j < 3; j++) {
+           if (n.state[i][j] != g.state[i][j]) cnt++;
+       }
+   }
+   return cnt;
+}
+
+
+bool comparator(const Node&lhs, const Node& rhs) {
+   return lhs.cost > rhs.cost;
+}
+
+
+void missingTile(queue<Node> &nodes, Node node, Problem problem) {
+   vector<Node> vec = expand(node, problem);
+   vector<Node> newVec;
+   for (int i = 0; i < vec.size(); i++) {
+       if (!problem.isVisited(vec.at(i))) { //if neighbor is not visited, compute missing tiles and push to queue in order of h(n)
+           vec.at(i).cost = computeMissingTiles(vec.at(i));
+           newVec.push_back(vec.at(i));
+       }
+   }
+
+
+   sort(newVec.begin(), newVec.end(),comparator);
+  
+   for (int i = 0; i < newVec.size(); i++) {
+       nodes.push(newVec.at(i));
+   }
+
+
+   return;
+}
+
+
+int computeManhattan(Node n) {
+   int cnt = 0;
+  
+   int g1[3] = {1,2,3};
+   int g2[3] = {4,5,6};
+   int g3[3] = {7,8,0};
+      
+   Node g = Node(g1,g2,g3,0);
+
+
+   for (int i = 0; i < 3; i++) {
+       for (int j = 0; j < 3; j++) {
+           if (n.state[i][j] != g.state[i][j]) {
+               if (n.state[i][j] != 0) {
+                   int row = (n.state[i][j] - 1) / 3;
+                   int col = (n.state[i][j] - 1) % 3;
+                   cnt += abs(i - row) + abs(j - col);
+               }
+           }
+       }
+   }
+   return cnt;
+}
+
+
+void manhattan(queue<Node> &nodes, Node node, Problem problem) {
+   vector<Node> vec = expand(node, problem);
+   vector<Node> newVec;
+   for (int i = 0; i < vec.size(); i++) {
+       if (!problem.isVisited(vec.at(i))) {
+           vec.at(i).cost = computeManhattan(vec.at(i));
+           newVec.push_back(vec.at(i));
+       }
+   }
+
+
+   sort(newVec.begin(), newVec.end(),comparator);
+  
+   for (int i = 0; i < newVec.size(); i++) {
+       nodes.push(newVec.at(i));
+   }
+
+
+   return;
+
+
+}
+
+
 Node generalSearch(Problem problem, int queueingFunction) {
    queue<Node> nodes;
    nodes.push(problem.initialState);
@@ -195,10 +295,20 @@ Node generalSearch(Problem problem, int queueingFunction) {
        Node node = nodes.front();
        problem.visit(node);
        nodes.pop();
-       //node.print();
+      
+       //testing
+       cout << endl;
+       node.print();
+       cout << "depth: " << node.depth << endl;
+       cout << "cost: " << node.cost << endl;
+
+
+
+
        if (problem.goalTest(node)) {return node;}
        if (queueingFunction == 1) {uniformCost(nodes,node,problem);}
-      
+       else if (queueingFunction == 2) {missingTile(nodes,node,problem);}
+       else {manhattan(nodes,node,problem);}
    }
 }
 
@@ -241,5 +351,3 @@ int main() {
 
    return 0;
 }
-
-
